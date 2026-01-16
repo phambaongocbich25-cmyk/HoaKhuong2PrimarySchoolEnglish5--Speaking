@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English 5 Speaking</title>
+
+<style>
+body{
+  font-family:"Comic Sans MS",Arial,sans-serif;
+  background:linear-gradient(135deg,#dbeeff,#ffffff);
+  margin:0;padding:14px
+}
+.container{
+  max-width:960px;margin:auto;
+  background:#fff;padding:18px;
+  border-radius:22px;
+  box-shadow:0 10px 25px rgba(0,0,0,.2)
+}
+h1{text-align:center;color:#0d47a1}
+.card{
+  background:#f5fbff;
+  padding:14px;margin-top:14px;
+  border-radius:16px;
+  border:2px dashed #bbdefb
+}
+input,select,textarea{
+  width:100%;padding:10px;
+  border-radius:12px;
+  border:2px solid #bbdefb;
+  margin-top:6px;
+  font-size:15px
+}
+button{
+  width:100%;padding:12px;
+  margin-top:10px;
+  background:#1565c0;
+  color:white;border:none;
+  border-radius:22px;
+  font-size:16px
+}
+.unit-title{
+  background:#ffeb3b;
+  padding:8px;border-radius:14px;
+  text-align:center;font-weight:bold;
+  margin-bottom:6px
+}
+.wrong{
+  color:#d32f2f;
+  font-weight:bold;
+  cursor:pointer
+}
+.star{font-size:26px;text-align:center}
+.certificate{
+  display:none;margin-top:22px;
+  padding:26px;border-radius:22px;
+  background:#fff;
+  border:6px double #fbc02d;
+  text-align:center
+}
+.cert-title{font-size:26px;color:#1565c0;margin:10px 0}
+.cert-name{font-size:24px;font-weight:bold}
+.sign{
+  display:flex;
+  justify-content:space-around;
+  margin-top:28px;
+  font-size:15px
+}
+.progress{
+  font-size:14px;
+  background:#e3f2fd;
+  padding:8px;
+  border-radius:12px;
+  margin-top:8px
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🎤 English 5 Speaking</h1>
+
+<div class="card">
+  <input id="studentName" placeholder="Student name">
+  <input id="studentClass" placeholder="Class (5/1)">
+</div>
+
+<div class="card">
+  <select id="mode">
+    <option value="unit">Speaking by Unit</option>
+    <option value="free">Free Speaking</option>
+  </select>
+</div>
+
+<div class="card" id="unitBox">
+  <select id="unit"></select>
+  <div class="unit-title" id="unitTitle"></div>
+  <p><b>👂 AI Sample (Lesson 1 + 2):</b></p>
+  <p id="sampleText"></p>
+  <button onclick="playSample()">▶ Listen sample</button>
+</div>
+
+<div class="card">
+  <textarea id="studentText" rows="4"
+  placeholder="Speak or prepare what you want to say..."></textarea>
+  <button onclick="startSpeak()">🎙 Start speaking</button>
+</div>
+
+<div class="card">
+  <h3>🤖 AI Feedback</h3>
+  <div id="feedback"></div>
+</div>
+
+<div class="card">
+  <h3>📈 Learning progress</h3>
+  <div id="progress" class="progress"></div>
+</div>
+
+<div class="certificate" id="certificate">
+  <div class="cert-title">CERTIFICATE OF ENGLISH SPEAKING</div>
+  <p>This certificate is proudly presented to</p>
+  <div class="cert-name" id="cName"></div>
+  <p id="cClass"></p>
+  <p id="cUnit"></p>
+  <div class="star" id="cStar"></div>
+
+  <div class="sign">
+    <div>Mrs Tran Thi Kim Yen</div>
+    <div>Mrs Pham Thi Ngoc Bich</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ===== FULL UNITS 1 → 20 ===== */
+const units = {
+1:["Unit 1: All about me","My name is Minh. I am ten years old and I am in Class 5A. I live in the countryside with my family. I go to school from Monday to Friday. In my free time, I like swimming and playing football."],
+2:["Unit 2: Our homes","I live in a house in the village. It is small but nice. There are four rooms in my house: a living room, two bedrooms and a kitchen. My favourite room is the living room."],
+3:["Unit 3: My foreign friends","I have a foreign friend. His name is Tom and he is from Australia. He is friendly and helpful. We often chat online and talk about our schools and hobbies."],
+4:["Unit 4: Our free-time activities","In my free time, I like listening to music and playing football. After school, I sometimes read books or help my parents at home."],
+5:["Unit 5: My future job","In the future, I would like to be a teacher. I like teaching children and helping them learn English well."],
+6:["Unit 6: Our school rooms","My school is big and beautiful. There are many rooms such as the library, the computer room and the music room."],
+7:["Unit 7: Our favourite school activities","My favourite school activity is doing projects. I like working in groups and sharing ideas with my classmates."],
+8:["Unit 8: In our classroom","Our classroom is large and bright. The board is in front of the class. The clock is above the door."],
+9:["Unit 9: Our outdoor activities","Yesterday, my classmates and I went camping. We played games and sang songs around the campfire."],
+10:["Unit 10: Our school trip","Last week, my school had a trip. We visited Ba Na Hills and took many photos."],
+11:["Unit 11: Family time","Last weekend, my family spent time together. We went to the park and watched TV together."],
+12:["Unit 12: Our Tet holiday","At Tet, my family decorate the house and visit our relatives. Children get lucky money."],
+13:["Unit 13: Our special days","On Children’s Day, we sing songs, play games and get lovely gifts."],
+14:["Unit 14: Staying healthy","To stay healthy, I eat healthy food, drink water and do exercise every day."],
+15:["Unit 15: Our health","I have a sore throat and a cough. I should drink warm water and take a rest."],
+16:["Unit 16: Seasons and weather","There are four seasons in a year. It is hot in summer and cold in winter."],
+17:["Unit 17: Stories for children","My favourite story is about a clever fox and a hard-working crow."],
+18:["Unit 18: Means of transport","I go to school by bike. My father goes to work by motorbike."],
+19:["Unit 19: Places of interest","Hoi An Ancient Town is beautiful and peaceful. I want to visit it one day."],
+20:["Unit 20: Our summer holidays","This summer, I am going to visit Phu Quoc Island with my family."]
+};
+
+/* ===== LOAD UNITS ===== */
+const unitSel = document.getElementById("unit");
+for(let i=1;i<=20;i++){
+  unitSel.innerHTML += `<option value="${i}">Unit ${i}</option>`;
+}
+unitSel.onchange = updateUnit;
+updateUnit();
+
+function updateUnit(){
+  unitTitle.innerText = units[unitSel.value][0];
+  sampleText.innerText = units[unitSel.value][1];
+}
+
+mode.onchange = ()=>{
+  unitBox.style.display = mode.value==="unit"?"block":"none";
+};
+
+/* ===== SAMPLE VOICE ===== */
+function playSample(){
+  const u = new SpeechSynthesisUtterance(sampleText.innerText);
+  u.lang="en-GB";
+  u.rate=0.85;
+  speechSynthesis.speak(u);
+}
+
+/* ===== SPEECH ===== */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recog = new SpeechRecognition();
+recog.lang="en-GB";
+
+function startSpeak(){ recog.start(); }
+
+recog.onresult = e=>{
+  const said = e.results[0][0].transcript.toLowerCase();
+  studentText.value = said;
+  checkUnit(said);
+};
+
+function speakWord(w){
+  const u = new SpeechSynthesisUtterance(w);
+  u.lang="en-GB";
+  speechSynthesis.speak(u);
+}
+
+function checkUnit(said){
+  const model = sampleText.innerText.toLowerCase().split(/\s+/);
+  const miss = model.filter(w=>!said.includes(w));
+  const stars = miss.length>6?2:miss.length>3?3:4;
+
+  feedback.innerHTML = miss.length
+    ? "❌ Words to fix:<br>" +
+      miss.map(w=>`<span class="wrong" onclick="speakWord('${w.replace(/'/g,"")}')">🔊 ${w}</span>`).join(", ")
+    : "✅ Very good pronunciation and fluency 👏";
+
+  saveProgress(stars);
+  showProgress();
+  showCert(stars);
+}
+
+/* ===== PROGRESS ===== */
+function saveProgress(stars){
+  const data = JSON.parse(localStorage.getItem("progress")||"[]");
+  data.push({
+    name: studentName.value,
+    unit: units[unitSel.value][0],
+    stars,
+    date: new Date().toLocaleDateString()
+  });
+  localStorage.setItem("progress", JSON.stringify(data));
+}
+
+function showProgress(){
+  const data = JSON.parse(localStorage.getItem("progress")||"[]");
+  progress.innerHTML = data.slice(-5).map(d =>
+    `⭐ ${d.stars} – ${d.unit} (${d.date})`
+  ).join("<br>");
+}
+
+/* ===== CERT ===== */
+function showCert(star){
+  certificate.style.display="block";
+  cName.innerText = studentName.value;
+  cClass.innerText = "Class: " + studentClass.value;
+  cUnit.innerText = units[unitSel.value][0];
+  cStar.innerText = "⭐".repeat(star);
+}
+</script>
+</body>
+</html>
